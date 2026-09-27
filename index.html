@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>GENIUS Network Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#F2ECDF;
+    --paper:#FCFAF4;
+    --navy:#18293F;
+    --navy-2:#122134;
+    --gold:#C69A3E;
+    --terracotta:#BE6A4E;
+    --ink:#1E2C3B;
+    --muted:#5C6B79;
+    --line:#E4DCC8;
+    --line-soft:rgba(24,41,63,0.08);
+    box-sizing:border-box;
+    padding-top:env(safe-area-inset-top,0px);
+    padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  *{box-sizing:inherit;}
+  html{scroll-padding-top:88px;}
+  html,body{margin:0;padding:0;background:var(--cream);color:var(--ink);}
+  body{
+    font-family:'DM Sans',system-ui,-apple-system,sans-serif;
+    font-size:16px;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{
+    font-family:'DM Serif Display',Georgia,serif;
+    font-weight:400;
+    color:var(--navy);
+    margin:0;
+    letter-spacing:-0.01em;
+  }
+  a{color:inherit;}
+  img,svg{max-width:100%;display:block;}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 32px;}
+  @media (max-width:640px){.wrap{padding:0 20px;}}
+
+  /* ---------- Top bar ---------- */
+  .topbar{
+    position:sticky;top:0;z-index:20;
+    background:rgba(242,236,223,0.94);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+    padding-top:env(safe-area-inset-top,0px);
+  }
+  .topbar-inner{
+    max-width:1180px;margin:0 auto;padding:16px 32px;
+    display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;
+  }
+  .brand{display:flex;align-items:center;gap:10px;cursor:pointer;}
+  .brand-mark{width:30px;height:30px;flex:none;}
+  .brand-text{font-family:'DM Sans';font-weight:700;font-size:15px;letter-spacing:0.02em;color:var(--navy);line-height:1.15;}
+  .brand-text span{display:block;font-weight:500;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--terracotta);}
+  nav.pillnav{display:flex;gap:8px;flex-wrap:wrap;}
+  nav.pillnav a{
+    font-size:13.5px;font-weight:600;text-decoration:none;color:var(--navy);
+    padding:8px 16px;border-radius:999px;border:1px solid var(--line);
+    background:var(--paper);white-space:nowrap;cursor:pointer;
+    transition:background 120ms ease, color 120ms ease, border-color 120ms ease;
+  }
+  nav.pillnav a:hover{background:var(--navy);color:var(--paper);border-color:var(--navy);}
+  nav.pillnav a.active{background:var(--navy);color:var(--paper);border-color:var(--navy);}
+
+  main{display:block;}
+  .page{display:none;}
+  .page.active{display:block;}
+
+  /* ---------- Hero ---------- */
+  .hero{padding:72px 0 56px;}
+  .hero-top{display:flex;justify-content:space-between;align-items:flex-start;gap:32px;flex-wrap:wrap;margin-bottom:28px;}
+  .eyebrow{
+    font-size:12px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;
+    color:var(--terracotta);display:flex;align-items:center;gap:8px;
+  }
+  .eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--terracotta);}
+  h1.hero-title{font-size:clamp(36px,5vw,56px);line-height:1.08;max-width:15ch;margin-top:14px;}
+  .hero-sub{font-size:18px;color:var(--muted);max-width:52ch;margin-top:18px;line-height:1.6;}
+  .hero-chip{
+    background:var(--paper);border:1px solid var(--line);border-radius:14px;
+    padding:16px 20px;display:flex;gap:14px;align-items:center;flex:none;
+  }
+  .hero-chip .ic{width:36px;height:36px;border-radius:10px;background:var(--navy);display:flex;align-items:center;justify-content:center;flex:none;}
+  .hero-chip .ic svg{width:18px;height:18px;stroke:var(--gold);}
+  .hero-chip .label{font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);}
+  .hero-chip .value{font-size:15.5px;font-weight:600;color:var(--navy);margin-top:2px;}
+
+  /* ---------- Stat row ---------- */
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:8px;}
+  @media (max-width:900px){.stats{grid-template-columns:repeat(2,1fr);}}
+  .stat-card{
+    background:var(--paper);border:1px solid var(--line-soft);border-top:3px solid var(--navy);
+    border-radius:4px;padding:22px 22px 20px;
+  }
+  .stat-card:nth-child(2){border-top-color:var(--gold);}
+  .stat-card:nth-child(3){border-top-color:var(--terracotta);}
+  .stat-card:nth-child(4){border-top-color:var(--gold);}
+  .stat-label{font-size:13.5px;font-weight:600;color:var(--muted);}
+  .stat-value{font-family:'DM Serif Display';font-size:34px;color:var(--navy);margin-top:8px;line-height:1;}
+  .stat-note{font-size:13px;color:var(--muted);margin-top:8px;}
+
+  /* ---------- Quick tiles (home) ---------- */
+  .tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:16px;}
+  @media (max-width:900px){.tiles{grid-template-columns:repeat(2,1fr);}}
+  .tile{
+    background:var(--paper);border:1px solid var(--line-soft);border-radius:4px;padding:22px;
+    text-decoration:none;display:block;transition:border-color 120ms ease, transform 120ms ease;
+  }
+  .tile:hover{border-color:var(--navy);}
+  .tile .tile-label{font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--terracotta);}
+  .tile h3{font-size:19px;margin-top:10px;}
+  .tile p{color:var(--muted);font-size:14px;margin-top:8px;}
+
+  section.block{padding:64px 0;}
+  main .page:first-of-type section.block:first-of-type{padding-top:0;}
+  .section-head{max-width:62ch;margin-bottom:36px;}
+  .section-head .eyebrow{margin-bottom:10px;}
+  .section-head h2{font-size:clamp(26px,3vw,34px);}
+  .section-head p{color:var(--muted);margin-top:14px;font-size:16px;}
+
+  /* ---------- About + panel ---------- */
+  .about-grid{display:grid;grid-template-columns:1.3fr 1fr;gap:20px;align-items:stretch;}
+  @media (max-width:860px){.about-grid{grid-template-columns:1fr;}}
+  .card{background:var(--paper);border:1px solid var(--line-soft);border-radius:4px;padding:32px;}
+  .about-copy p{color:var(--ink);font-size:16px;max-width:56ch;}
+  .principle-list{margin-top:22px;border-top:1px solid var(--line);}
+  .principle{
+    display:flex;gap:16px;padding:16px 0;border-bottom:1px solid var(--line);
+  }
+  .principle .num{
+    font-family:'DM Serif Display';font-size:20px;color:var(--gold);flex:none;width:28px;
+  }
+  .principle .txt-label{font-weight:600;color:var(--navy);font-size:15px;}
+  .principle .txt-body{color:var(--muted);font-size:14.5px;margin-top:3px;}
+
+  .panel-dark{
+    background:var(--navy);color:#EDEAE0;border-radius:4px;padding:32px;
+    display:flex;flex-direction:column;
+  }
+  .panel-dark .eyebrow{color:#E3B77A;}
+  .panel-dark h3{color:#FBF9F3;font-size:24px;margin-top:12px;}
+  .panel-dark p{color:#C7D0DA;font-size:15px;margin-top:14px;line-height:1.65;}
+  .panel-links{margin-top:24px;padding-top:20px;border-top:1px solid rgba(255,255,255,0.14);display:flex;flex-direction:column;gap:2px;}
+  .panel-links a{
+    display:flex;justify-content:space-between;align-items:center;
+    text-decoration:none;color:#EDEAE0;font-size:14.5px;font-weight:600;
+    padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.09);cursor:pointer;
+  }
+  .panel-links a:last-child{border-bottom:none;}
+  .panel-links a .arrow{color:#E3B77A;font-family:'DM Serif Display';}
+
+  /* ---------- Events ---------- */
+  .tier-block{margin-bottom:22px;}
+  .tier-card{
+    background:var(--paper);border:1px solid var(--line-soft);border-radius:4px;padding:30px;
+  }
+  .tier-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;}
+  .tier-tag{
+    display:inline-block;font-size:11.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;
+    color:var(--terracotta);border:1px solid var(--terracotta);border-radius:999px;padding:4px 12px;
+    width:fit-content;
+  }
+  .tier-card h3{font-size:22px;margin-top:14px;line-height:1.25;}
+  .tier-card > p.desc{color:var(--muted);font-size:15px;margin-top:10px;max-width:60ch;}
+  .session-list{margin-top:20px;border-top:1px solid var(--line);}
+  .session-row{
+    display:flex;justify-content:space-between;align-items:flex-start;gap:16px;
+    padding:14px 0;border-bottom:1px solid var(--line);flex-wrap:wrap;
+  }
+  .session-row .where{font-weight:600;color:var(--navy);font-size:14.5px;}
+  .session-row .when{color:var(--muted);font-size:13.5px;margin-top:2px;}
+  .session-row .tag{
+    font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--gold);
+    border:1px solid var(--gold);border-radius:999px;padding:3px 10px;flex:none;height:fit-content;
+  }
+  .facilitators{margin-top:18px;font-size:13.5px;color:var(--muted);}
+  .facilitators strong{color:var(--navy);}
+  .reg-note{margin-top:18px;font-size:13.5px;color:var(--muted);padding-top:16px;border-top:1px solid var(--line);}
+  .reg-note a{color:var(--navy);font-weight:600;text-decoration:underline;text-decoration-color:var(--line);}
+
+  .staal-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:20px;}
+  @media (max-width:760px){.staal-grid{grid-template-columns:1fr;}}
+  .staal-card{border:1px solid var(--line-soft);border-top:3px solid var(--gold);border-radius:4px;padding:20px;}
+  .staal-card h4{font-family:'DM Sans';font-weight:700;font-size:14.5px;color:var(--navy);margin:0;}
+  .staal-card .p-name{font-size:13px;color:var(--terracotta);font-weight:600;margin-top:2px;}
+  .staal-card ul{list-style:none;margin:14px 0 0;padding:0;}
+  .staal-card li{font-size:13.5px;color:var(--muted);padding:6px 0;border-top:1px solid var(--line);}
+  .staal-card li:first-child{border-top:none;}
+
+  .tier3-line{
+    background:var(--paper);border:1px solid var(--line-soft);border-left:4px solid var(--navy);
+    border-radius:4px;padding:22px 26px;display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;
+  }
+  .tier3-line p{color:var(--muted);font-size:15px;max-width:56ch;}
+  .tier3-line strong{color:var(--navy);}
+
+  /* ---------- Resource banner ---------- */
+  .banner{
+    background:var(--paper);border:1px solid var(--line-soft);border-left:5px solid var(--gold);
+    border-radius:4px;padding:34px 36px;
+    display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap;
+  }
+  .banner h3{font-size:24px;}
+  .banner p{color:var(--muted);margin-top:8px;font-size:15px;max-width:50ch;}
+  .btn{
+    background:var(--navy);color:#FBF9F3;text-decoration:none;font-weight:600;font-size:14.5px;
+    padding:13px 24px;border-radius:4px;white-space:nowrap;flex:none;border:none;cursor:pointer;
+    transition:background 120ms ease;
+  }
+  .btn:hover{background:var(--navy-2);}
+  .lib-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:20px;}
+  @media (max-width:860px){.lib-grid{grid-template-columns:1fr;}}
+  .lib-card{background:var(--paper);border:1px solid var(--line-soft);border-radius:4px;padding:24px;}
+  .lib-card h4{font-family:'DM Serif Display';font-weight:400;font-size:19px;color:var(--navy);}
+  .lib-card p{color:var(--muted);font-size:14px;margin-top:8px;}
+
+  /* ---------- Contact ---------- */
+  .contact-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;}
+  @media (max-width:860px){.contact-grid{grid-template-columns:1fr;}}
+  .contact-card{border:1px solid var(--line-soft);border-radius:4px;padding:26px;background:var(--paper);}
+  .contact-card .label{font-size:12px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--terracotta);}
+  .contact-card .name{font-family:'DM Serif Display';font-size:20px;color:var(--navy);margin-top:10px;}
+  .contact-card .role{color:var(--muted);font-size:14px;margin-top:4px;}
+  .contact-card .email{margin-top:14px;font-size:14px;font-weight:600;color:var(--navy);text-decoration:none;border-bottom:1px solid var(--line);display:inline-block;}
+  .contact-note{
+    margin-top:20px;background:var(--navy);color:#EDEAE0;border-radius:4px;padding:24px 28px;
+    display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;
+  }
+  .contact-note p{font-size:14.5px;color:#C7D0DA;max-width:56ch;}
+  .contact-note strong{color:#FBF9F3;}
+
+  footer{border-top:1px solid var(--line);padding:28px 0 44px;}
+  .foot-row{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--muted);}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand" data-nav="home">
+      <svg class="brand-mark" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="16" cy="13" r="9" fill="#C69A3E"/>
+        <rect x="12.5" y="21" width="7" height="4" rx="1.5" fill="#18293F"/>
+        <path d="M13 25.5h6" stroke="#18293F" stroke-width="1.6" stroke-linecap="round"/>
+        <path d="M16 6.5v1.6M20.5 8.3l-1.1 1.2M11.5 8.3l1.1 1.2M9.6 13h1.6M20.8 13h1.6" stroke="#FCFAF4" stroke-width="1.3" stroke-linecap="round"/>
+      </svg>
+      <div class="brand-text">GENIUS Initiative<span>Network Hub</span></div>
+    </div>
+    <nav class="pillnav">
+      <a data-nav="home">Home</a>
+      <a data-nav="about">About</a>
+      <a data-nav="events">Events</a>
+      <a data-nav="resources">Resource Library</a>
+      <a data-nav="contact">Contact Us</a>
+    </nav>
+  </div>
+</div>
+
+<main>
+
+  <!-- ===================== HOME ===================== -->
+  <div class="page" id="page-home">
+    <div class="wrap">
+      <section class="block hero">
+        <div class="hero-top">
+          <div>
+            <div class="eyebrow"><span class="dot"></span>LACOE &middot; Kings COE &middot; Sonoma COE</div>
+            <h1 class="hero-title">One home for the GENIUS Network.</h1>
+            <p class="hero-sub">Coaching, professional learning, and community for the schools and leaders carrying the STAAL framework into practice &mdash; materials, events, and updates, all in one place.</p>
+          </div>
+          <div class="hero-chip">
+            <div class="ic">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V10M18 20V4M6 20v-6"/></svg>
+            </div>
+            <div>
+              <div class="label">2026&ndash;27 Network Year</div>
+              <div class="value">Now underway</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="stats">
+          <div class="stat-card">
+            <div class="stat-label">GENIUS Schools</div>
+            <div class="stat-value">23</div>
+            <div class="stat-note">Across the network</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">County Offices</div>
+            <div class="stat-value">3</div>
+            <div class="stat-note">LACOE, Kings, Sonoma</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Programming Tiers</div>
+            <div class="stat-value">3</div>
+            <div class="stat-note">Freedom Dreaming, CoPs, Coaching</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Guiding Framework</div>
+            <div class="stat-value" style="font-size:26px;">STAAL</div>
+            <div class="stat-note">Supporting the African American Learner</div>
+          </div>
+        </div>
+
+        <div class="tiles">
+          <a class="tile" data-nav="about">
+            <div class="tile-label">About</div>
+            <h3>The GENIUS Initiative</h3>
+            <p>What it is and the STAAL principles behind it.</p>
+          </a>
+          <a class="tile" data-nav="events">
+            <div class="tile-label">Events</div>
+            <h3>2026&ndash;27 calendar</h3>
+            <p>Tier I, Tier II, and STAAL Communities of Practice dates.</p>
+          </a>
+          <a class="tile" data-nav="resources">
+            <div class="tile-label">Resource Library</div>
+            <h3>Materials &amp; FAQs</h3>
+            <p>Session materials, links, and exit slips.</p>
+          </a>
+          <a class="tile" data-nav="contact">
+            <div class="tile-label">Contact</div>
+            <h3>Reach your team</h3>
+            <p>LACOE, Kings COE, and Sonoma COE contacts.</p>
+          </a>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- ===================== ABOUT ===================== -->
+  <div class="page" id="page-about">
+    <div class="wrap">
+      <section class="block">
+        <div class="section-head">
+          <div class="eyebrow"><span class="dot"></span>About</div>
+          <h2>What the GENIUS Initiative is building</h2>
+          <p>A CDE-funded, multi-county educational equity program grounded in the STAAL framework &mdash; giving schools shared language, shared tools, and a shared community for the work of protecting and nurturing every student's inherent genius.</p>
+        </div>
+        <div class="about-grid">
+          <div class="card about-copy">
+            <p>The GENIUS Initiative connects school teams across Los Angeles, Kings, and Sonoma counties, pairing principal coaching with Communities of Practice so that leaders aren't doing this work alone. Everything on this hub &mdash; the convenings, the coaching tools, the resource library &mdash; ties back to the four principles of the STAAL Guide.</p>
+            <div class="principle-list">
+              <div class="principle">
+                <div class="num">1</div>
+                <div><div class="txt-label">Explore Belief Systems to Begin the Work</div><div class="txt-body">Naming and examining the beliefs that shape how students are seen.</div></div>
+              </div>
+              <div class="principle">
+                <div class="num">2</div>
+                <div><div class="txt-label">Create Educational Systems that Facilitate and Support Learning</div><div class="txt-body">Building structures that make strong instruction sustainable.</div></div>
+              </div>
+              <div class="principle">
+                <div class="num">3</div>
+                <div><div class="txt-label">Ensure Culturally Relevant, Sustaining, and Revitalizing High Quality Instruction</div><div class="txt-body">Instruction that reflects and affirms students' identities.</div></div>
+              </div>
+              <div class="principle">
+                <div class="num">4</div>
+                <div><div class="txt-label">Mitigate the Accumulation of Disadvantage</div><div class="txt-body">Catching and interrupting patterns before they compound.</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="panel-dark">
+            <div class="eyebrow">Get oriented</div>
+            <h3>New to the hub?</h3>
+            <p>Start here if you're a principal, coach, or team lead joining the network this year.</p>
+            <div class="panel-links">
+              <a data-nav="events">Upcoming convenings <span class="arrow">&rsaquo;</span></a>
+              <a data-nav="resources">Materials &amp; FAQs <span class="arrow">&rsaquo;</span></a>
+              <a data-nav="contact">Talk to your GENIUS team <span class="arrow">&rsaquo;</span></a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- ===================== EVENTS ===================== -->
+  <div class="page" id="page-events">
+    <div class="wrap">
+      <section class="block" style="padding-bottom:24px;">
+        <div class="section-head">
+          <div class="eyebrow"><span class="dot"></span>Events</div>
+          <h2>The 2026&ndash;27 GENIUS calendar</h2>
+          <p>Every GENIUS School attends one Tier I session and every Tier II Community of Practice &mdash; principal and GENIUS Team Lead included.</p>
+        </div>
+
+        <div class="tier-block">
+          <div class="tier-card">
+            <div class="tier-head">
+              <div>
+                <span class="tier-tag">Tier I</span>
+                <h3>Freedom Dreaming for Student Success</h3>
+              </div>
+            </div>
+            <p class="desc">All GENIUS Schools attend once, if they haven't already. Pick whichever regional session works for your team.</p>
+            <div class="session-list">
+              <div class="session-row">
+                <div><div class="where">Downey, CA</div><div class="when">July 20&ndash;22, 2026</div></div>
+                <span class="tag">Completed</span>
+              </div>
+              <div class="session-row">
+                <div><div class="where">Sacramento, CA</div><div class="when">October 6&ndash;8, 2026</div></div>
+                <span class="tag">Upcoming</span>
+              </div>
+              <div class="session-row">
+                <div><div class="where">Sonoma, CA</div><div class="when">January 25&ndash;27, 2027 &middot; details soon</div></div>
+                <span class="tag">Upcoming</span>
+              </div>
+            </div>
+            <div class="reg-note">Register through the LACOE Event Calendar. Questions? <a href="mailto:genius@lacoe.edu">genius@lacoe.edu</a> &middot; (562) 922-6403</div>
+          </div>
+        </div>
+
+        <div class="tier-block">
+          <div class="tier-card">
+            <div class="tier-head">
+              <div>
+                <span class="tier-tag">Tier II</span>
+                <h3>Communities of Practice</h3>
+              </div>
+            </div>
+            <p class="desc">Attendance is required for all GENIUS Schools, including the principal and GENIUS Team Lead. Each attendee registers individually.</p>
+            <div class="session-list">
+              <div class="session-row"><div><div class="where">Virtual</div><div class="when">Wednesday, August 26, 2026 &middot; 8:00am&ndash;12:00pm</div></div><span class="tag">Completed</span></div>
+              <div class="session-row"><div><div class="where">LACOE Head Start &amp; Early Learning, Santa Fe Springs</div><div class="when">Wednesday, September 30, 2026 &middot; 8:00am&ndash;4:00pm</div></div><span class="tag">Upcoming</span></div>
+              <div class="session-row"><div><div class="where">Virtual</div><div class="when">Tuesday, November 3, 2026 &middot; 8:00am&ndash;12:00pm</div></div><span class="tag">Upcoming</span></div>
+              <div class="session-row"><div><div class="where">Virtual</div><div class="when">Wednesday, December 9, 2026 &middot; 8:00am&ndash;12:00pm</div></div><span class="tag">Upcoming</span></div>
+              <div class="session-row"><div><div class="where">LACOE Head Start &amp; Early Learning, Santa Fe Springs</div><div class="when">Friday, February 19, 2027 &middot; 8:00am&ndash;4:00pm</div></div><span class="tag">Upcoming</span></div>
+              <div class="session-row"><div><div class="where">Virtual</div><div class="when">Tuesday, April 13, 2027 &middot; 8:00am&ndash;12:00pm</div></div><span class="tag">Upcoming</span></div>
+            </div>
+            <div class="facilitators">Facilitated by <strong>Allyson Taylor</strong>, <strong>Kennia DeCastro</strong>, and <strong>Robert Parra</strong>.</div>
+            <div class="reg-note">Register through the LACOE Event Calendar. Questions? <a href="mailto:genius@lacoe.edu">genius@lacoe.edu</a> &middot; (562) 922-6403</div>
+          </div>
+        </div>
+
+        <div class="tier-block">
+          <div class="tier-card">
+            <span class="tier-tag" style="color:var(--navy);border-color:var(--navy);">Going Deeper</span>
+            <h3>STAAL Communities of Practice</h3>
+            <p class="desc">A four-part virtual series for educators and leaders who've already completed a Freedom Dreaming experience &mdash; one arc through all four STAAL principles. All sessions are on Zoom, 4:00&ndash;6:30pm.</p>
+            <div class="staal-grid">
+              <div class="staal-card">
+                <h4>Principle I</h4>
+                <div class="p-name">Explore Belief Systems to Begin the Work</div>
+                <ul>
+                  <li>Wed, July 29, 2026</li>
+                  <li>Wed, August 5, 2026</li>
+                  <li>Wed, August 12, 2026</li>
+                  <li>Wed, August 19, 2026</li>
+                </ul>
+              </div>
+              <div class="staal-card">
+                <h4>Principle II</h4>
+                <div class="p-name">Create Educational Systems that Facilitate &amp; Support Learning</div>
+                <ul>
+                  <li>Wed, October 21, 2026</li>
+                  <li>Wed, November 4, 2026</li>
+                </ul>
+              </div>
+              <div class="staal-card">
+                <h4>Principle III</h4>
+                <div class="p-name">Ensure Culturally Relevant, Sustaining, and Revitalizing High Quality Instruction</div>
+                <ul>
+                  <li>Wed, January 20, 2027</li>
+                  <li>Wed, February 3, 2027</li>
+                </ul>
+              </div>
+              <div class="staal-card">
+                <h4>Principle IV</h4>
+                <div class="p-name">Mitigate the Accumulation of Disadvantage</div>
+                <ul>
+                  <li>Wed, May 26, 2027</li>
+                  <li>Wed, June 9, 2027</li>
+                </ul>
+              </div>
+            </div>
+            <div class="reg-note">Participants are encouraged to attend all sessions to fully engage in the learning progression. Register at <a href="https://lacoe.k12oms.org/2748-278982" target="_blank" rel="noopener">lacoe.k12oms.org/2748-278982</a>.</div>
+          </div>
+        </div>
+
+        <div class="tier-block">
+          <div class="tier3-line">
+            <p><strong>Tier III &mdash; Coaching.</strong> Continue meeting with your school's GENIUS Coach, who also serves as your main point of contact throughout the year.</p>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- ===================== RESOURCES ===================== -->
+  <div class="page" id="page-resources">
+    <div class="wrap">
+      <section class="block">
+        <div class="section-head">
+          <div class="eyebrow"><span class="dot"></span>Resource Library</div>
+          <h2>Everything from every session, in one place</h2>
+          <p>Materials, links, FAQs, and exit slips &mdash; organized so you're not hunting back through old emails.</p>
+        </div>
+        <div class="banner">
+          <div>
+            <h3>Open the Resource Library</h3>
+            <p>Freedom Dreaming and Communities of Practice materials, contact info, FAQs, and exit slips from every GENIUS session.</p>
+          </div>
+          <a class="btn" href="#">Open the library</a>
+        </div>
+        <div class="lib-grid">
+          <div class="lib-card">
+            <h4>Tier I materials</h4>
+            <p>Slide decks, handouts, and exit slips from Freedom Dreaming for Student Success.</p>
+          </div>
+          <div class="lib-card">
+            <h4>Tier II materials</h4>
+            <p>Communities of Practice agendas, protocols, and STAAL Guide resources.</p>
+          </div>
+          <div class="lib-card">
+            <h4>FAQs</h4>
+            <p>Common questions about registration, attendance requirements, and coaching.</p>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- ===================== CONTACT ===================== -->
+  <div class="page" id="page-contact">
+    <div class="wrap">
+      <section class="block">
+        <div class="section-head">
+          <div class="eyebrow"><span class="dot"></span>Contact Us</div>
+          <h2>Reach your GENIUS team</h2>
+          <p>Questions about coaching, a Community of Practice, or the resource library &mdash; here's who to reach out to.</p>
+        </div>
+        <div class="contact-grid">
+          <div class="contact-card">
+            <div class="label">LACOE</div>
+            <div class="name">Dr. Sonja Johnson</div>
+            <div class="role">GENIUS Initiative &mdash; Los Angeles County</div>
+            <a class="email" href="mailto:genius@lacoe.edu">genius@lacoe.edu</a>
+          </div>
+          <div class="contact-card">
+            <div class="label">Kings COE</div>
+            <div class="name">Alaina Mignard</div>
+            <div class="role">GENIUS Network Lead, Kings County</div>
+            <a class="email" href="mailto:genius@lacoe.edu">genius@lacoe.edu</a>
+          </div>
+          <div class="contact-card">
+            <div class="label">Sonoma COE</div>
+            <div class="name">Nzinga Woods</div>
+            <div class="role">GENIUS Network Lead, Sonoma County</div>
+            <a class="email" href="mailto:genius@lacoe.edu">genius@lacoe.edu</a>
+          </div>
+        </div>
+        <div class="contact-note">
+          <p><strong>Have a coach already?</strong> Reach out to your coach directly, or email <a href="mailto:genius@lacoe.edu" style="color:#FBF9F3;">genius@lacoe.edu</a> and we'll route you.</p>
+        </div>
+      </section>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <div class="wrap foot-row">
+    <div>GENIUS Network Hub &middot; a CDE-funded multi-county educational equity initiative</div>
+    <div>Grounded in the STAAL framework</div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var pages = ['home','about','events','resources','contact'];
+  function show(id){
+    if(pages.indexOf(id) === -1) id = 'home';
+    pages.forEach(function(p){
+      document.getElementById('page-'+p).classList.toggle('active', p === id);
+    });
+    document.querySelectorAll('nav.pillnav a').forEach(function(a){
+      a.classList.toggle('active', a.getAttribute('data-nav') === id);
+    });
+    window.scrollTo({top:0, behavior:'instant' in window ? 'instant' : 'auto'});
+  }
+  document.querySelectorAll('[data-nav]').forEach(function(el){
+    el.addEventListener('click', function(e){
+      e.preventDefault();
+      var id = el.getAttribute('data-nav');
+      history.pushState(null, '', '#/'+id);
+      show(id);
+    });
+  });
+  window.addEventListener('popstate', function(){
+    var id = (location.hash || '#/home').replace('#/','');
+    show(id);
+  });
+  var initial = (location.hash || '#/home').replace('#/','');
+  show(initial);
+})();
+</script>
+
+</body>
+</html>
